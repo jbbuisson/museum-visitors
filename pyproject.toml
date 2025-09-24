@@ -17,8 +17,21 @@ dependencies = [
 	"jupyter",
 	"wikipedia-api",
 	"matplotlib",
-	"wikitextparser"
+	"dotenv",
+	"wikitextparser",
+	"geocoder",
+	"mysql-connector-python",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+	"pytest"
+]
+
+[tool.black]
+line-length = 120
+
 
 [tool.setuptools]
 packages = ["museums_db"]

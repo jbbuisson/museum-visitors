@@ -1,54 +1,109 @@
-import sqlite3
-import pandas as pd
+import os
 
-DB_PATH = 'museums.db'
+import mysql.connector
+
+print("DB_HOST:", os.getenv("DB_HOST"))
+print(f"JUPYTER_CONTAINER = {os.environ.get('JUPYTER_CONTAINER')}")
+
+
+def get_connection():
+    # TODO config file
+    DB_CONFIG = {
+        "host": os.getenv("DB_HOST", "127.0.0.1"),
+        "port": os.getenv("DB_PORT", "3306"),
+        "user": "user",
+        "password": "mysecretpassword",
+        "database": "museum_db",
+    }
+
+    return mysql.connector.connect(**DB_CONFIG)
+
 
 def init_db():
-	conn = sqlite3.connect(DB_PATH)
-	c = conn.cursor()
-	c.execute('''
-		CREATE TABLE IF NOT EXISTS museums (
-			id INTEGER PRIMARY KEY,
-			name TEXT,
-			city TEXT,
-			country TEXT,
-			annual_visitors INTEGER
-		)
-	''')
-	c.execute('''
-		CREATE TABLE IF NOT EXISTS cities (
-			id INTEGER PRIMARY KEY,
-			name TEXT,
-			country TEXT,
-			population INTEGER
-		)
-	''')
-	conn.commit()
-	conn.close()
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS museums (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255),
+            city VARCHAR(255),
+            country VARCHAR(255),
+            annual_visitors INT,
+            UNIQUE (name, city, country)
+        )
+    """
+    )
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS cities (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255),
+            country VARCHAR(255),
+            population BIGINT,
+            UNIQUE (name, country)
+        )
+    """
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-def insert_museum(name, city, country, annual_visitors):
-	conn = sqlite3.connect(DB_PATH)
-	c = conn.cursor()
-	c.execute('INSERT INTO museums (name, city, country, annual_visitors) VALUES (?, ?, ?, ?)',
-			  (name, city, country, annual_visitors))
-	conn.commit()
-	conn.close()
+
+def insert_museums_data(df):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "INSERT INTO museums (name, city, country, annual_visitors) VALUES (%s, %s, %s, %s)"
+
+    museums = []
+    for _, row in df.iterrows():
+        museums.append((row["name"], row["city"], row["country"], row["annual_visitors"]))
+
+    cursor.executemany(query, museums)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def insert_cities_data(df):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "INSERT INTO cities (name, country, population) VALUES (%s, %s, %s)"
+
+    cities = []
+    for _, row in df.iterrows():
+        cities.append((row["city"], row["country"], row["population"]))
+
+    cursor.executemany(query, cities)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 
 def insert_city(name, country, population):
-	conn = sqlite3.connect(DB_PATH)
-	c = conn.cursor()
-	c.execute('INSERT INTO cities (name, country, population) VALUES (?, ?, ?)',
-			  (name, country, population))
-	conn.commit()
-	conn.close()
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO cities (name, country, population) VALUES (%s, %s, %s)", (name, country, population))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 
 def get_museum_city_data():
-	conn = sqlite3.connect(DB_PATH)
-	query = '''
-		SELECT m.name, m.city, m.country, m.annual_visitors, c.population
-		FROM museums m
-		JOIN cities c ON m.city = c.name AND m.country = c.country
-	'''
-	df = pd.read_sql_query(query, conn)
-	conn.close()
-	return df
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        """
+        SELECT m.name AS museum_name, m.city AS city_name, m.country AS country_name,
+               m.annual_visitors, c.population
+        FROM museums m
+        INNER JOIN cities c ON m.city = c.name AND m.country = c.country
+    """
+    )
+    results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return results

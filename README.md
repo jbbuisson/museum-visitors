@@ -24,6 +24,7 @@ See the Jupyter notebook in `notebooks/` for analysis and instructions. Run the 
 ## Docker
 ```bash
 docker-compose up -d
+docker-compose down
 docker stop museum_db
 docker rm museum_db
 ```
@@ -31,7 +32,7 @@ docker rm museum_db
 ## MySQL
 1. Connexion au docker
 ```bash
-docker exec -it museum_db psql -U postgres
+docker exec -it museum_db mysql -uroot -p
 ```
 
 2. Selection de la BD
@@ -41,11 +42,29 @@ use museum_db
 
 3. Create table
 ```sql
-create table my_example(my_col char)
-show tables
+create table my_example(my_col char);
+show tables;
 ```
 
 4. Quit Mysql
 ```sql
 \q
 ```
+
+# Design
+
+## Application
+- Design patterns ????
+- Cache
+- assert
+- config file + .env
+- tests ???
+- Use pathlib instead of os.path
+
+## Docker
+- secrets in docker compose
+
+## Database
+- visitors could be extracted to another table containing the museum id, the year, and the visitor count
+- keep active connection
+

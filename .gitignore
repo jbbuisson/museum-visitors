@@ -215,6 +215,9 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+.Trash-0/
+
 # Data
 db_data/
 notebooks/museums.db
+cache/

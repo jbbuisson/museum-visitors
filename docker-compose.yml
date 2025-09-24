@@ -10,6 +10,8 @@ services:
   notebook:
     build: .
     container_name: museum_notebook
+    environment:
+    - JUPYTER_CONTAINER=1
     volumes:
       - .:/app
     ports:
@@ -30,7 +32,7 @@ services:
     container_name: museum_db
     
     ports:
-      - "3306:3306"
+    - "3306:3306"
 
     volumes:
       - ./db_data:/var/lib/mysql
