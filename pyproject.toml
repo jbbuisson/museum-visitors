@@ -1,0 +1,27 @@
+[project]
+name = "museum-visitors"
+description = "Correlate museum attendance with city population using Wikipedia and public APIs."
+version = "0.1.0"
+authors = [{name = "JBB", email = "test@example.com"}]
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+	"flask",
+	"fastapi",
+	"uvicorn",
+	"requests",
+	"pandas",
+	"scikit-learn",
+	"sqlalchemy",
+	"jupyter",
+	"wikipedia-api",
+	"matplotlib",
+	"wikitextparser"
+]
+
+[tool.setuptools]
+packages = ["museums_db"]
+
+[tool.jupyter]
+notebook_dir = "notebooks"

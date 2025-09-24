@@ -1,0 +1,12 @@
+flask
+fastapi
+uvicorn
+requests
+pandas
+scikit-learn
+sqlalchemy
+jupyter
+# wikipedia-api
+matplotlib
+dotenv
+lxml
