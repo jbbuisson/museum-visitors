@@ -61,6 +61,9 @@ def insert_museums_data(df):
     for _, row in df.iterrows():
         museums.append((row["name"], row["city"], row["country"], row["annual_visitors"]))
 
+    # TODO: prevoir IntegrityError: 1062 (23000): Duplicate entry 'Paris-France' for key 'cities.name'
+
+
     cursor.executemany(query, museums)
     conn.commit()
     cursor.close()
@@ -76,6 +79,8 @@ def insert_cities_data(df):
     cities = []
     for _, row in df.iterrows():
         cities.append((row["city"], row["country"], row["population"]))
+
+    # TODO: prevoir IntegrityError: 1062 (23000): Duplicate entry 'Paris-France' for key 'cities.name'
 
     cursor.executemany(query, cities)
     conn.commit()
