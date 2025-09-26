@@ -1,6 +1,22 @@
 # Museum Visitors Analysis
 
-This project builds a harmonized database of the world's most visited museums (over 2 million annual visitors) and correlates their attendance with the population of their respective cities. Data is retrieved from Wikipedia and a reliable city population source, stored in SQLite, and analyzed using linear regression (scikit-learn). The project is containerized with Docker and includes a Jupyter notebook for interactive analysis.
+This project builds a harmonized database of the world's most visited museums (over 2 million annual visitors) and correlates their attendance with the population of their respective cities.
+
+The project is containerized with Docker and includes a MySQL database and Jupyter notebook for interactive analysis.
+
+## Overview
+- Data:
+    - is retrieved from:
+        - Wikipedia for museum data
+        - GeoNames for city population
+    - stored in a MySQL database
+- Analysis is done:
+    - in a Jupyter notebook
+    - using linear regression (scikit-learn).
+    
+## Prerequisites
+- A free personal API token from Wikipedia (https://api.wikimedia.org/wiki/Getting_started_with_Wikimedia_APIs)
+- 
 
 ## Features
 - Automated data retrieval from Wikipedia API
@@ -57,9 +73,11 @@ show tables;
 - Design patterns ????
 - Cache
 - assert
-- config file + .env
+- config file + .env (WIKIMEDIA_API_KEY not found in jupyter. To be added to docker secrets ????)
 - tests ???
 - Use pathlib instead of os.path
+- Gestion des erreurs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+- log ??
 
 ## Docker
 - secrets in docker compose

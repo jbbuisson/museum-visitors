@@ -24,7 +24,7 @@ def get_cities_population(df_cities) -> pd.DataFrame:
         city = row["city"]
         country = row["country"]
 
-        g = geocoder.geonames(f"{city}, {country}", key="titi")
+        g = geocoder.geonames(f"{city}, {country}", key="geonames_jb")
         population = g.population if g.ok else 0
         populations.append(population)
 
