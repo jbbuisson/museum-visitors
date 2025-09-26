@@ -2,9 +2,6 @@ import os
 
 import mysql.connector
 
-print("DB_HOST:", os.getenv("DB_HOST"))
-print(f"JUPYTER_CONTAINER = {os.environ.get('JUPYTER_CONTAINER')}")
-
 
 def get_connection():
     # TODO config file
@@ -62,7 +59,6 @@ def insert_museums_data(df):
         museums.append((row["name"], row["city"], row["country"], row["annual_visitors"]))
 
     # TODO: prevoir IntegrityError: 1062 (23000): Duplicate entry 'Paris-France' for key 'cities.name'
-
 
     cursor.executemany(query, museums)
     conn.commit()
