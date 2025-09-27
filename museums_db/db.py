@@ -1,6 +1,7 @@
 import os
 
 import mysql.connector
+from mysql.connector import IntegrityError
 
 
 def get_connection():
@@ -48,7 +49,6 @@ def init_db():
 
 
 def insert_museums_data(df):
-
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -58,12 +58,15 @@ def insert_museums_data(df):
     for _, row in df.iterrows():
         museums.append((row["name"], row["city"], row["country"], row["annual_visitors"]))
 
-    # TODO: prevoir IntegrityError: 1062 (23000): Duplicate entry 'Paris-France' for key 'cities.name'
-
-    cursor.executemany(query, museums)
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        cursor.executemany(query, museums)
+        conn.commit()
+    except IntegrityError as e:
+        print(f"Warning: Duplicate museum entry detected. {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
 
 
 def insert_cities_data(df):
@@ -76,12 +79,15 @@ def insert_cities_data(df):
     for _, row in df.iterrows():
         cities.append((row["city"], row["country"], row["population"]))
 
-    # TODO: prevoir IntegrityError: 1062 (23000): Duplicate entry 'Paris-France' for key 'cities.name'
-
-    cursor.executemany(query, cities)
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        cursor.executemany(query, cities)
+        conn.commit()
+    except IntegrityError as e:
+        print(f"Warning: Duplicate city entry detected. {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
 
 
 def insert_city(name, country, population):

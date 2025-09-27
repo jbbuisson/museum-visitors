@@ -37,14 +37,6 @@ The project is containerized with Docker and includes a MySQL database and Jupyt
 See the Jupyter notebook in `notebooks/` for analysis and instructions. Run the project using Docker Compose.
 
 # Notes
-## Docker
-```bash
-docker-compose up -d
-docker-compose down
-docker stop museum_db
-docker rm museum_db
-```
-
 ## MySQL
 1. Connexion au docker
 ```bash

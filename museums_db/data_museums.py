@@ -1,4 +1,5 @@
 from pprint import pprint
+import os
 import requests
 import wikitextparser as wtp
 import pandas as pd
@@ -7,11 +8,15 @@ import dotenv
 import re
 import time
 import pickle
+from museums_db.utils import load_cache, save_cache
 
 CACHE_FOLDER = Path("cache")
+NUMBER_OF_MUSEUMS_EXPECTED = 53
+
+CACHE_FOLDER.mkdir(parents=True, exist_ok=True)
 
 
-def get_most_visited_museums(min_visitors=2_000_000) -> pd.DataFrame:
+def get_most_visited_museums(min_visitors: int =2_000_000) -> pd.DataFrame:
     """
     Retrieve from Wikipedia the list of museums with more than min_visitors annually.
     Returns a DataFrame with museum name, city, country, and annual visitors.
@@ -22,8 +27,8 @@ def get_most_visited_museums(min_visitors=2_000_000) -> pd.DataFrame:
     df_filtered = filter_museum_data(df_museum_data, min_visitors)
 
     assert (
-        df_filtered.shape[0] == 53
-    ), f"As of 2025/09/24, 53 museums should be found with at least {min_visitors} visitors"
+        df_filtered.shape[0] == NUMBER_OF_MUSEUMS_EXPECTED
+    ), f"As of 2025/09/24, {NUMBER_OF_MUSEUMS_EXPECTED} museums should be found with at least {min_visitors} visitors"
 
     df_cleaned = df_filtered[["Name_clean", "City_clean", "country_clean", "annual_visitors"]].copy()
     df_cleaned = df_cleaned.rename(
@@ -37,32 +42,21 @@ def get_most_visited_museums(min_visitors=2_000_000) -> pd.DataFrame:
     return df_cleaned
 
 
-def get_raw_museum_data(cache_data=True, cache_duration=86400) -> pd.DataFrame:
+def get_raw_museum_data(cache_data: bool = True, cache_duration: int =86400) -> pd.DataFrame:
     cache_file = CACHE_FOLDER / "museum_data_cache.pkl"
     cache_meta_file = CACHE_FOLDER / "museum_data_cache_meta.txt"
+
     # Check cache
     if cache_data and cache_file.exists() and cache_meta_file.exists():
-        try:
-            with open(cache_meta_file, "r") as f:
-                cache_time = float(f.read().strip())
-            if time.time() - cache_time < cache_duration:
-                with open(cache_file, "rb") as f:
-                    df = pickle.load(f)
-                return df
-        except Exception:
-            pass
+        df = load_cache(cache_file, cache_meta_file, cache_duration)
+        if df is not None:
+            return df
 
     df = get_raw_data_from_wikipedia()
 
     # Save to cache
     if cache_data:
-        try:
-            with open(cache_file, "wb") as f:
-                pickle.dump(df, f)
-            with open(cache_meta_file, "w") as f:
-                f.write(str(time.time()))
-        except Exception:
-            pass
+        save_cache(df, cache_file, cache_meta_file)
 
     return df
 
@@ -72,7 +66,7 @@ def get_raw_data_from_wikipedia(page: str = "List_of_most-visited_museums"):
     url = "https://api.wikimedia.org/core/v1/wikipedia/en/page/" + page
 
     dotenv.load_dotenv()
-    api_key = dotenv.get_key(".env", "WIKIMEDIA_API_KEY")
+    api_key = dotenv.get_key(".env", "WIKIPEDIA_API_KEY")
 
     headers = {"Authorization": api_key, "User-Agent": "jb"}
 
@@ -161,14 +155,14 @@ def parse_visitors(val):
     match = re.search(r"([\d\.,]+)\s*million", s, re.IGNORECASE)
     if match:
         num = match.group(1).replace(",", "").replace(".", "")
-        # If number like '3.78', treat as 3,780,000
+        # If number like '3.78 million', treat as 3,780,000
         if "." in match.group(1):
             try:
                 return int(float(match.group(1).replace(",", "")) * 1_000_000)
             except Exception:
                 return 0
         try:
-            return int(num) * 1_000
+            return int(num) * 1_000_000
         except Exception:
             print(f"Warning: could not parse visitors value '{val}'")
             return 0
