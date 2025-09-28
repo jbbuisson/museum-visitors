@@ -57,9 +57,11 @@ use museum_db
 - log ??
 
 ## Docker
-- For productionde ployment, I would use docker secrets
+- For production deployment, using docker secrets would be better
 
 ## Database
 - To store the number of visitors from previous years, a new table could be created to store the number of visitors (museum_id, year, and the visitor count)
 - keep active connection
 
+## Notebook
+- chex graph options and content (units for x axis)
