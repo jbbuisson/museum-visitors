@@ -15,6 +15,7 @@ NUMBER_OF_MUSEUMS_EXPECTED = 53
 
 CACHE_FOLDER.mkdir(parents=True, exist_ok=True)
 
+dotenv.load_dotenv()
 
 def get_most_visited_museums(min_visitors: int =2_000_000) -> pd.DataFrame:
     """
@@ -65,8 +66,7 @@ def get_raw_data_from_wikipedia(page: str = "List_of_most-visited_museums"):
     # Fetch fresh data
     url = "https://api.wikimedia.org/core/v1/wikipedia/en/page/" + page
 
-    dotenv.load_dotenv()
-    api_key = dotenv.get_key(".env", "WIKIPEDIA_API_KEY")
+    api_key = os.getenv("WIKIPEDIA_API_KEY")
 
     headers = {"Authorization": api_key, "User-Agent": "jb"}
 

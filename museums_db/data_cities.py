@@ -42,7 +42,6 @@ def get_cities_population(df_cities, cache_data=True, cache_duration=86400) -> p
     df_cities["population"] = populations
 
     print(f"Cities with missing population: {df_cities[df_cities['population'] == 0].shape[0]}")
-    print(df_cities.head())
 
     # Save to cache
     if cache_data:

@@ -24,7 +24,7 @@ services:
       - ./db_data:/var/lib/mysql
 
     environment:
-      MYSQL_ROOT_PASSWORD: mysecretpassword
-      MYSQL_DATABASE: museum_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: mysecretpassword
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}

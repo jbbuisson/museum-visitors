@@ -5,13 +5,12 @@ from mysql.connector import IntegrityError
 
 
 def get_connection():
-    # TODO config file
     DB_CONFIG = {
         "host": os.getenv("DB_HOST", "127.0.0.1"),
         "port": os.getenv("DB_PORT", "3306"),
-        "user": "user",
-        "password": "mysecretpassword",
-        "database": "museum_db",
+        "user": os.getenv("DB_USER"),
+        "password": os.getenv("DB_PASSWORD"),
+        "database": os.getenv("DB_DATABASE", "museum_db"),
     }
 
     return mysql.connector.connect(**DB_CONFIG)
@@ -52,7 +51,7 @@ def insert_museums_data(df):
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = "INSERT INTO museums (name, city, country, annual_visitors) VALUES (%s, %s, %s, %s)"
+    query = "INSERT IGNORE INTO museums (name, city, country, annual_visitors) VALUES (%s, %s, %s, %s)"
 
     museums = []
     for _, row in df.iterrows():
@@ -73,7 +72,7 @@ def insert_cities_data(df):
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = "INSERT INTO cities (name, country, population) VALUES (%s, %s, %s)"
+    query = "INSERT IGNORE INTO cities (name, country, population) VALUES (%s, %s, %s)"
 
     cities = []
     for _, row in df.iterrows():

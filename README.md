@@ -21,15 +21,14 @@ The project is containerized with Docker and includes a MySQL database and Jupyt
 ## Features
 - Automated data retrieval from Wikipedia API
 - City population data integration
-- SQLite database for rapid prototyping
+- MySQL database for rapid prototyping
 - Linear regression model to correlate city population and museum visitors
-- Flask/FastAPI API for future scalability
 - Jupyter notebook for data exploration and visualization
 - Docker & Docker Compose setup
 
 ## Rationale
 - Wikipedia API ensures authoritative, up-to-date museum data
-- SQLite is lightweight and easy to scale up
+- MySQL is lightweight and easy to scale up
 - scikit-learn is standard for rapid ML prototyping
 - Docker ensures reproducibility and easy deployment
 
@@ -39,7 +38,7 @@ See the Jupyter notebook in `notebooks/` for analysis and instructions. Run the 
 # Notes
 ## MySQL
 1. Connexion au docker
-```bash
+```bash 
 docker exec -it museum_db mysql -uroot -p
 ```
 
@@ -48,33 +47,19 @@ docker exec -it museum_db mysql -uroot -p
 use museum_db
 ```
 
-3. Create table
-```sql
-create table my_example(my_col char);
-show tables;
-```
-
-4. Quit Mysql
-```sql
-\q
-```
-
 # Design
 
 ## Application
-- Design patterns ????
-- Cache
-- assert
+- Cache to limit calls to api
+- assert if the page changes before the review :)
 - config file + .env (WIKIMEDIA_API_KEY not found in jupyter. To be added to docker secrets ????)
-- tests ???
-- Use pathlib instead of os.path
 - Gestion des erreurs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 - log ??
 
 ## Docker
-- secrets in docker compose
+- For productionde ployment, I would use docker secrets
 
 ## Database
-- visitors could be extracted to another table containing the museum id, the year, and the visitor count
+- To store the number of visitors from previous years, a new table could be created to store the number of visitors (museum_id, year, and the visitor count)
 - keep active connection
 
