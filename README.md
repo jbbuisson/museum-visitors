@@ -52,12 +52,12 @@ use museum_db
 ## Application
 - Cache to limit calls to api
 - assert if the page changes before the review :)
-- config file + .env (WIKIMEDIA_API_KEY not found in jupyter. To be added to docker secrets ????)
-- Gestion des erreurs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-- log ??
+- TODO Gestion des erreurs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+- TODO log ??
 
 ## Docker
 - For production deployment, using docker secrets would be better
+- TODO: do not copy hidden directories like .git
 
 ## Database
 - To store the number of visitors from previous years, a new table could be created to store the number of visitors (museum_id, year, and the visitor count)
