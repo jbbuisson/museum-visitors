@@ -89,15 +89,6 @@ def insert_cities_data(df):
         conn.close()
 
 
-def insert_city(name, country, population):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO cities (name, country, population) VALUES (%s, %s, %s)", (name, country, population))
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
 def get_museum_city_data():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
