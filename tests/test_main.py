@@ -6,8 +6,6 @@ import pandas as pd
 
 from pprint import pprint
 
-# sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), '..')))
-
 
 def main(init_db=False):
     if init_db:
