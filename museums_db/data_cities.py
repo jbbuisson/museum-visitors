@@ -30,6 +30,18 @@ def get_cities_population(df_cities, cache_data=True, cache_duration=86400) -> p
         if df is not None:
             return df
 
+    get_raw_data_from_geocoder(df_cities)
+
+    print(f"Cities with missing population: {df_cities[df_cities['population'] == 0].shape[0]}")
+
+    # Save to cache
+    if cache_data:
+        save_cache(df_cities, cache_file, cache_meta_file)
+
+    return df_cities
+
+
+def get_raw_data_from_geocoder(df_cities):
     populations = []
     for _, row in df_cities.iterrows():
         city = row["city"]
@@ -40,11 +52,3 @@ def get_cities_population(df_cities, cache_data=True, cache_duration=86400) -> p
         populations.append(population)
         
     df_cities["population"] = populations
-
-    print(f"Cities with missing population: {df_cities[df_cities['population'] == 0].shape[0]}")
-
-    # Save to cache
-    if cache_data:
-        save_cache(df_cities, cache_file, cache_meta_file)
-
-    return df_cities
