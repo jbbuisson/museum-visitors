@@ -51,17 +51,15 @@ use museum_db
 
 ## Application
 - Cache to limit calls to api
-- assert if the page changes before the review :)
-- TODO Gestion des erreurs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-- TODO log ??
+- assert if the page changes before the review (Murphy's Law)
 
 ## Docker
 - For production deployment, using docker secrets would be better
-- TODO: do not copy hidden directories like .git
+- Next step, do not copy hidden directories like .git, .venv, ...
 
 ## Database
 - To store the number of visitors from previous years, a new table could be created to store the number of visitors (museum_id, year, and the visitor count)
-- keep active connection
+- keep active connection, to reduce the number of connection creations
 
 ## Notebook
-- chex graph options and content (units for x axis)
+- checx graph options and content (units for x axis)

@@ -23,7 +23,7 @@ def test_save_and_load_cache():
         # Save cache
         utils.save_cache(data, cache_file, meta_file)
         # Load cache (should be valid)
-        loaded = utils.load_cache(cache_file, meta_file, cache_duration=60)
+        loaded = utils.load_cache(cache_file, meta_file, cache_duration=1)
         assert loaded == data
         # Load cache (should be expired)
         time.sleep(2)
