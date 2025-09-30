@@ -43,12 +43,38 @@ def get_cities_population(df_cities, cache_data=True, cache_duration=86400) -> p
 
 def get_raw_data_from_geocoder(df_cities):
     populations = []
+    errors = []
+    max_retries = 3
+    retry_delay = 2  # seconds
+
     for _, row in df_cities.iterrows():
         city = row["city"]
         country = row["country"]
-
-        g = geocoder.geonames(f"{city}, {country}", key="geonames_jb")
-        population = g.population if g.ok else 0
-        populations.append(population)
         
+        for attempt in range(max_retries):
+            try:
+                print(f"Fetching population for {city}, {country} (Attempt {attempt + 1})")
+                g = geocoder.geonames(f"{city}, {country}", key="geonames_jb")
+                if g.ok:
+                    population = g.population
+                    populations.append(population)
+                    break
+                else:
+                    if attempt == max_retries - 1:
+                        errors.append(f"Failed to get population for {city}, {country}: {g.error}")
+                        populations.append(0)
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    errors.append(f"Error processing {city}, {country}: {str(e)}")
+                    populations.append(0)
+                time.sleep(retry_delay)
+                continue
+            
+            time.sleep(retry_delay)  # Rate limiting protection
+    
+    if errors:
+        print("Encountered errors while fetching population data:")
+        for error in errors:
+            print(f"- {error}")
+            
     df_cities["population"] = populations

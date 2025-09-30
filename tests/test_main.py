@@ -33,4 +33,4 @@ def main(init_db=False):
 
 
 if __name__ == "__main__":
-    main()
+    main(True)
